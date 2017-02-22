@@ -1,3 +1,5 @@
+#[![Latest Release](https://img.shields.io/badge/Release-Latest-brightgreen.svg)](https://github.com/PaulStubbs/nodejs-alexa-connect-sample/releases/latest)
+
 # Microsoft Graph Alexa Connect Node Sample (SDK)
 ##Table of contents
 
@@ -9,7 +11,7 @@
 * [Create the Alexa custom skill](#createSkill)
 * [Run the sample](#run)
 * [Questions and comments](#questions)
-* [Contributing](#contributing")
+* [Contributing](#contributing)
 * [Additional resources](#additional-resources)
 
 <a name="introduction"></a>
