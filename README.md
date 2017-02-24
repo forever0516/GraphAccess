@@ -1,6 +1,6 @@
 #[![Latest Release](https://img.shields.io/badge/Release-Latest-brightgreen.svg)](https://github.com/PaulStubbs/nodejs-alexa-connect-sample/releases/latest)
 
-# Microsoft Graph Alexa Connect Node Sample (SDK)
+# Graph Bot (SDK)
 ##Table of contents
 
 * [Introduction](#introduction)
