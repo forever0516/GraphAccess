@@ -7,6 +7,9 @@
       "intent": "WhoAmIIntent"
     },
     {
+      "intent": "WhatsNextIntent"
+    },
+    {
       "intent": "AMAZON.StopIntent"
     },
     {

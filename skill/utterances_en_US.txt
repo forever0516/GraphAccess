@@ -10,3 +10,9 @@ WhoAmIIntent about the logged in user
 WhoAmIIntent who is logged in
 WhoAmIIntent about the linked account
 WhoAmIIntent which account is linked
+
+WhatsNextIntent whats next
+WhatsNextIntent what is next
+WhatsNextIntent what is next on my calendar
+WhatsNextIntent what is my next meeting
+WhatsNextIntent when is my next meeting
