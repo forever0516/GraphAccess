@@ -155,6 +155,12 @@ var handlers = {
         WhoAmIIntent(this);
 
     },
+    "WhatsNextIntent": function () {
+        log("WhatsNextIntent", logLevels.info);
+
+        WhatsNextIntent(this);
+
+    },
     "AMAZON.StopIntent": function() {
         log("StopIntent", logLevels.info);
         var speechOutput = shutdownMessage;
@@ -190,6 +196,14 @@ var handlers = {
         });
     }
 };
+
+function WhoAmIIntent(alexaResponse){
+
+        //return the results to Alexa
+        VoiceInsights.track("WhatsNextIntent", null, null, (error, response) => {
+            return alexaResponse.emit(":tell", "What Next is not yet implemented");
+        });
+}
 
 function WhoAmIIntent(alexaResponse){
         // get the authenticated user info
