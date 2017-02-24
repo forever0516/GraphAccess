@@ -4,6 +4,9 @@
       "intent": "SendMailIntent"
     },
     {
+      "intent": "WhoAmIIntent"
+    },
+    {
       "intent": "AMAZON.StopIntent"
     },
     {

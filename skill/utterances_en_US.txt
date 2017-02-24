@@ -3,3 +3,10 @@ SendMailIntent send me mail
 SendMailIntent send mail to myself
 SendMailIntent send a test message
 SendMailIntent send a test message to myself
+
+WhoAmIIntent Who am I 
+WhoAmIIntent about me
+WhoAmIIntent about the logged in user
+WhoAmIIntent who is logged in
+WhoAmIIntent about the linked account
+WhoAmIIntent which account is linked

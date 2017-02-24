@@ -11,7 +11,7 @@ var Alexa = require("alexa-sdk");
 
 // Microsoft Graph JavaScript SDK
 // npm install msgraph-sdk-javascript
-const MicrosoftGraph = require("msgraph-sdk-javascript");
+var MicrosoftGraph = require("msgraph-sdk-javascript");
 
 // Email helper
 var emailHelper = require("./emailHelper.js");
@@ -47,6 +47,7 @@ var responseCardImages = {
 // Adding Telemetry
 // http://VoiceLabs.co
 var VoiceInsights = require('voice-insights-sdk');
+// SETUP NOTE: Add Lambda Environment Variable called VI_APP_TOKEN
 var VI_APP_TOKEN = process.env.VI_APP_TOKEN;
 
 // Adding logging levels
@@ -58,6 +59,7 @@ var VI_APP_TOKEN = process.env.VI_APP_TOKEN;
 var logLevels = {error: 3, warn: 2, info: 1, debug: 0};
 
 // get the current log level from the current environment if set, else set to info
+// SETUP NOTE: Add Lambda Environment Variable called LOG_LEVEL
 var currLogLevel = process.env.LOG_LEVEL != null ? process.env.LOG_LEVEL : 'info';
 
 // print the log statement, only if the requested log level is greater than the current log level
@@ -86,8 +88,8 @@ exports.handler = function(event, context, callback) {
 
     // Verify that the Request is Intended for Your Service
     // This value is set on the server or in the .env file
-    // SETUP NOTE: Add Lambda Environment Variable called ApplicationId
-    var appId = process.env.ApplicationId;
+    // SETUP NOTE: Add Lambda Environment Variable called APPLICATION_ID
+    var appId = process.env.APPLICATION_ID;
 
     var alexa = Alexa.handler(event, context);
     alexa.appId = appId;
@@ -147,6 +149,12 @@ var handlers = {
         SendMailIntent(this);
 
     },
+    "WhoAmIIntent": function () {
+        log("WhoAmIIntent", logLevels.info);
+
+        WhoAmIIntent(this);
+
+    },
     "AMAZON.StopIntent": function() {
         log("StopIntent", logLevels.info);
         var speechOutput = shutdownMessage;
@@ -183,6 +191,30 @@ var handlers = {
     }
 };
 
+function WhoAmIIntent(alexaResponse){
+        // get the authenticated user info
+        getUser(alexaResponse)
+        // **
+        // handle the getUser results
+        .then(function(user){
+            //check if the user is valid
+            if(!user) throw "There is no user returned ";
+
+            var displayName = user.displayName;
+
+            //return the results to Alexa
+            VoiceInsights.track("WhoAmIIntent", null, null, (error, response) => {
+                return alexaResponse.emit(":tell", "The linked account belongs to " + displayName);
+            });
+        })
+        .catch(function(err){
+            log("WhoAmIIntent getUser Error: " + JSON.stringify(err), logLevels.error);
+            alexaResponse.emit(":tell", "There was an error. " + err.message)
+            // re-throw the error so the chain of promises don't continue
+            throw "There was a getuser catch error: " + JSON.stringify(err);
+        })
+}
+
 function SendMailIntent(alexaResponse){
         // get the authenticated user info
         getUser(alexaResponse)
@@ -196,7 +228,7 @@ function SendMailIntent(alexaResponse){
             return sendMail(user);
         })
         .catch(function(err){
-            log("getUser Error: " + JSON.stringify(err), logLevels.error);
+            log("SendMailIntent getUser Error: " + JSON.stringify(err), logLevels.error);
             alexaResponse.emit(":tell", "There was an error. " + err.message)
             // re-throw the error so the chain of promises don't continue
             throw "There was a getuser catch error: " + JSON.stringify(err);
