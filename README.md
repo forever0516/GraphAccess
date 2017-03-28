@@ -1,7 +1,7 @@
 Download Now: [![Latest Release](https://img.shields.io/badge/Release-Latest-brightgreen.svg)](https://github.com/PaulStubbs/nodejs-alexa-connect-sample/releases/latest)
 
 # Graph Bot Alexa Skill
-##Table of contents
+## Table of contents
 
 * [Introduction](#introduction)
 * [Prerequisites](#prerequisites)
@@ -36,7 +36,7 @@ This sample requires the following:
 ## Build and package the code for your skill
 In this sample, the bot is written in Node.js. To prepare the code package for deployment, use the following steps to download dependencies and create a .zip file. 
 
-###Building the Bot###
+### Building the Bot ###
 
 1. Download or clone the Microsoft Graph Alexa Connect Node Sample.
 2. Install the dependencies by running the following command:
@@ -62,7 +62,7 @@ In this sample, the bot is written in Node.js. To prepare the code package for d
 	
 In the [Deploy the Skill](#deploy) section you will learn how to deploy this node zip package to a hosting provider, like AWS Lambda.
 
-####Code Highlights
+#### Code Highlights
 
 - The main skill code is located in the index.js file. This contains the main entry point which is called from the Echo device. In addition to passing the intent and the slot values, the OAuth 2 bearer token will also be passed to your code on every intent. Later in the [Create the Alexa custom skill](#createSkill) section you will link the skill with Active Directory. Once the account is linked and authenticated, the bearer token will be passed on every call; you only need to provide it to the Microsoft Graph JavaScript library to make calls on the Graph.
 
@@ -325,5 +325,3 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## Copyright
 Copyright (c) 2016 Microsoft. All rights reserved.
-
-
