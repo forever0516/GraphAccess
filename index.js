@@ -20,7 +20,7 @@ var emailHelper = require("./emailHelper.js");
 var client = {};
 
 // Message when the skill is first called
-var WelcomeMessage = "Welcome to Graph Bot. . Here are some things you can say. . . Send Mail . . Send a test message . . or Send me mail";
+var WelcomeMessage = "Welcome to gina office. . Here are some things you can say. . . Send Mail . . Send a test message . . or Send me mail";
 var WelcomeMessageCard = 'Here are some things you can say:\n\n "Send Mail" \n "Send a test message" \n "Send me mail"';
 var WelcomeMessageCardTitle = "Welcome to Graph Bot"
 
@@ -60,8 +60,9 @@ var logLevels = {error: 3, warn: 2, info: 1, debug: 0};
 
 // get the current log level from the current environment if set, else set to info
 // SETUP NOTE: Add Lambda Environment Variable called LOG_LEVEL
-var currLogLevel = process.env.LOG_LEVEL != null ? process.env.LOG_LEVEL : 'info';
+var currLogLevel = process.env.LOG_LEVEL != null ? process.env.LOG_LEVEL : 'debug';
 
+var replyMessage = '';
 // print the log statement, only if the requested log level is greater than the current log level
 function log(statement, logLevel) {
 
@@ -245,25 +246,25 @@ function SendMailIntent(alexaResponse){
             log("SendMailIntent getUser Error: " + JSON.stringify(err), logLevels.error);
             alexaResponse.emit(":tell", "There was an error. " + err.message)
             // re-throw the error so the chain of promises don't continue
-            throw "There was a getuser catch error: " + JSON.stringify(err);
+            throw "1111There was a getuser catch error: " + JSON.stringify(err);
         })
 
         // handle the sendMail results
         .then(function(mail){
             // check if the sendmail succeded
-            if(!mail) throw "There was an error sending mail";
+            if(!mail) throw "2222There was an error sending mail";
 
             // then send confirmation back to alexa
-            var mailSubject = mail.Message.Subject;
+            // var mailSubject = mail.Message.Subject;
             log("Mail Sent: " + JSON.stringify(mail), logLevels.debug);
             //return the results to Alexa
             VoiceInsights.track("sendMailIntent", null, null, (error, response) => {
-                return alexaResponse.emit(":tell", "Mail sent to you with a subject of " + mailSubject);
+                return alexaResponse.emit(":tell", mail);
             });
         })
         .catch(function(err){
             log("sendMail Error: " + JSON.stringify(err), logLevels.error);
-            alexaResponse.emit(":tell", "There was an error sending the mail");
+            alexaResponse.emit(":tell", "3333There was an error sending the mail");
             // re-throw the error so the chain of promises don't continue
             throw "There was an sendmail catch error: " + JSON.stringify(err);
         })
@@ -297,21 +298,99 @@ function sendMail(user){
                 " destinationEmailAddress: " + destinationEmailAddress); 
 
     //Make a call to the Graph API
+    // client
+    //     .api("/me/sendMail")
+    //     .post({message: mail.Message}, (err, res) => {
+    //         if(err){
+    //             log("sendMail Error: " + JSON.stringify(err));
+    //             reject(err);
+    //         }else{
+    //             // log the sendMail results
+    //             log("sendMail successful: ");
+    //             // return the mail that was sent
+    //             VoiceInsights.track("getUser", null, JSON.stringify(user), (error, response) => {
+    //                 resolve(mail);
+    //             });
+    //         }
+    // });
+
+    // Find my top 5 contacts on the beta endpoint
+    // client
+    // .api('/me/people')
+    // .version('beta')
+    // .top(5)
+    // .select("displayName")
+    // .get((err, res) => {
+    //     if (err) {
+    //         console.log(err)
+    //         return;
+    //     }
+    //     const topContacts = res.value.map((u) => {return u.displayName});
+    //     console.log("Your top contacts are", topContacts.join(", "));
+    // });    
+
+
+    // GET 3 of my events
+
+    // var url = '/me/calendar/calendarView?startDateTime=2017-01-01T19:00:00.0000000&endDateTime=2017-01-07T19:00:00.0000000';
+
+var Moment = require('moment-timezone');
+var today = Moment().tz('Asian/Taipei').startOf('hour').add(8, 'hours').format('YYYY-MM-DD');
+var startDate = today+'T'+'00:00:00.0000000';
+var endDate = today+'T'+'23:59:59.0000000';
+
+    console.log('type '+ typeof(startDate));
+    var url = '/me/calendar/calendarView?startDateTime='+ startDate.toString() + '&'+'endDateTime='+endDate.toString();
+    
+    console.log('date:    '+new Date());
+    // var url = '/me/calendar/calendarView?startDateTime=2017-04-21T00:00:00.0000000&endDateTime=2017-04-21T23:59:59.0000000';
+    console.log('first'+url.toString());
+
+    // var url = '/me/calendar/calendarView?startDateTime=2017-04-20T00:00:00.0000000&endDateTime=2017-04-20T19:00:00.0000000';
+
+    // var url = '/me/calendar/calendarView?startDateTime=2017-04-21T00:00:00.0000000&endDateTime=2017-04-21T23:00:00.0000000';
     client
-        .api("/me/sendMail")
-        .post({message: mail.Message}, (err, res) => {
-            if(err){
-                log("sendMail Error: " + JSON.stringify(err));
-                reject(err);
-            }else{
-                // log the sendMail results
-                log("sendMail successful: ");
-                // return the mail that was sent
-                VoiceInsights.track("getUser", null, JSON.stringify(user), (error, response) => {
-                    resolve(mail);
-                });
+    .api(url.toString())
+    .header("Prefer", 'outlook.timezone="Asia/Taipei"')
+    .top(3)
+    .get((err, res) => {
+        if (err) {
+            console.log(err)
+            return;
+        }else{
+            console.log(url);
+            var upcomingEventNames = []
+
+            
+            for (var i=0; i<res.value.length; i++) {
+                upcomingEventNames.push(JSON.stringify( res.value[i]));
             }
-    });
+            
+            replyMessage = 'you have '+upcomingEventNames.length+' meeting today. . ';
+            
+            for(var i=1; i<=upcomingEventNames.length; i++){
+                replyMessage += i+'. ' + res.value[i-1].subject + ' at ' + res.value[i-1].start.dateTime.substring(res.value[i-1].start.dateTime.lastIndexOf("T")+1,res.value[i-1].start.dateTime.lastIndexOf("."))+'. . ';
+            }
+            if(upcomingEventNames.length>=3){
+                replyMessage += 'for more, please check your alexa app';
+            }
+            
+
+
+            console.log(JSON.stringify(res));
+            
+            // VoiceInsights.track("sendMailIntent", null, replyMessage, (error, response) =>{
+
+            // });
+            VoiceInsights.track("sendMailIntent", null, replyMessage, (error, response) => {
+                    resolve(replyMessage);
+            });
+        }
+
+        
+    })
+
+
 
     }) //end Promise
 }
