@@ -20,14 +20,14 @@ var emailHelper = require("./emailHelper.js");
 var client = {};
 
 // Message when the skill is first called
-var WelcomeMessage = "Welcome to gina office. . Here are some things you can say. . . Send Mail . . Send a test message . . or Send me mail";
+var WelcomeMessage = "Welcome to gina Office. . Here are some things you can say. . . Check calendar . . Check my calendar . .";
 var WelcomeMessageCard = 'Here are some things you can say:\n\n "Send Mail" \n "Send a test message" \n "Send me mail"';
-var WelcomeMessageCardTitle = "Welcome to Graph Bot"
+var WelcomeMessageCardTitle = "Welcome to gina office"
 
 // Message for help intent
-var HelpMessage = "Here are some things you can say. . . Send Mail . . Send a test message . . or Send me mail";
+var HelpMessage = "Here are some things you can say. . . Check calendar . . Check my calendar . .";
 var HelpMessageCard = 'Here are some things you can say:\n\n "Send Mail" \n "Send a test message" \n "Send me mail"';
-var HelpMessageCardTitle = "Graph Bot Help"
+var HelpMessageCardTitle = "Gina Office Help"
 
 // Used to tell user skill is closing
 var shutdownMessage = "Ok see you again soon.";
